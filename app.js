@@ -9,8 +9,6 @@
   const discStage = $('#discStage');
   const gallery = $('#gallery');
   const galleryGrid = $('#galleryGrid');
-  const collectionView = $('#collectionView');
-  const aboutView = $('#aboutView');
   const cursorLabel = $('#cursorLabel');
   const lightbox = $('#lightbox');
   const stageStatus = $('#stageStatus');
@@ -32,36 +30,91 @@
       .replaceAll("'", '&#039;');
   }
 
+  function setText(node, value) {
+    if (node) node.textContent = value;
+  }
+
   function setAccent(color = defaultAccent) {
     document.documentElement.style.setProperty('--active-accent', color);
   }
 
-  function updateDiscMotion(event, disc) {
-    const r = disc.getBoundingClientRect();
-    const x = Math.max(0, Math.min(1, (event.clientX - r.left) / r.width));
-    const y = Math.max(0, Math.min(1, (event.clientY - r.top) / r.height));
-    const strength = event.pointerType === 'touch' ? 8 : 12;
-    const ry = (x - .5) * strength;
-    const rx = (.5 - y) * strength;
-    disc.style.setProperty('--tilt-x', `${rx.toFixed(2)}deg`);
-    disc.style.setProperty('--tilt-y', `${ry.toFixed(2)}deg`);
-    disc.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
-    disc.style.setProperty('--my', `${(y * 100).toFixed(1)}%`);
-  }
+  function createDiscMotion(card, disc) {
+    const state = {
+      currentX: 0,
+      currentY: 0,
+      targetX: 0,
+      targetY: 0,
+      currentMX: 50,
+      currentMY: 50,
+      targetMX: 50,
+      targetMY: 50,
+      raf: 0,
+      active: false,
+    };
 
-  function resetDiscMotion(disc) {
-    disc.style.setProperty('--tilt-x', '0deg');
-    disc.style.setProperty('--tilt-y', '0deg');
-    disc.style.setProperty('--mx', '50%');
-    disc.style.setProperty('--my', '50%');
+    function render() {
+      state.currentX += (state.targetX - state.currentX) * 0.14;
+      state.currentY += (state.targetY - state.currentY) * 0.14;
+      state.currentMX += (state.targetMX - state.currentMX) * 0.14;
+      state.currentMY += (state.targetMY - state.currentMY) * 0.14;
+
+      disc.style.setProperty('--tilt-x', `${state.currentX.toFixed(2)}deg`);
+      disc.style.setProperty('--tilt-y', `${state.currentY.toFixed(2)}deg`);
+      disc.style.setProperty('--mx', `${state.currentMX.toFixed(1)}%`);
+      disc.style.setProperty('--my', `${state.currentMY.toFixed(1)}%`);
+
+      const settled =
+        Math.abs(state.targetX - state.currentX) < 0.03 &&
+        Math.abs(state.targetY - state.currentY) < 0.03 &&
+        Math.abs(state.targetMX - state.currentMX) < 0.08 &&
+        Math.abs(state.targetMY - state.currentMY) < 0.08;
+
+      if (state.active || !settled) {
+        state.raf = requestAnimationFrame(render);
+      } else {
+        state.raf = 0;
+      }
+    }
+
+    function wake() {
+      if (!state.raf) state.raf = requestAnimationFrame(render);
+    }
+
+    function update(event) {
+      const r = disc.getBoundingClientRect();
+      const x = Math.max(0, Math.min(1, (event.clientX - r.left) / r.width));
+      const y = Math.max(0, Math.min(1, (event.clientY - r.top) / r.height));
+      const strength = event.pointerType === 'touch' ? 6.8 : 9.5;
+      state.targetY = (x - 0.5) * strength;
+      state.targetX = (0.5 - y) * strength;
+      state.targetMX = x * 100;
+      state.targetMY = y * 100;
+      wake();
+    }
+
+    function enter() {
+      state.active = true;
+      wake();
+    }
+
+    function leave() {
+      state.active = false;
+      state.targetX = 0;
+      state.targetY = 0;
+      state.targetMX = 50;
+      state.targetMY = 50;
+      wake();
+    }
+
+    return { update, enter, leave };
   }
 
   function buildDiscs() {
     const total = archive.collections.length;
-    discRange.textContent = total ? `01—${pad(total)} / ${pad(total)}` : '00 / 00';
+    setText(discRange, total ? `01—${pad(total)} / ${pad(total)}` : '00 / 00');
 
     discStage.innerHTML = archive.collections.map((collection, index) => `
-      <button class="disc-card" data-collection="${escapeHtml(collection.id)}" aria-label="Open ${escapeHtml(collection.title)} gallery" style="--float-delay:${(-index * .72).toFixed(2)}s;--rotor-duration:${30 + (index * 3.4)}s">
+      <button class="disc-card" data-collection="${escapeHtml(collection.id)}" aria-label="Open ${escapeHtml(collection.title)} gallery" style="--float-delay:${(-index * .72).toFixed(2)}s;--rotor-duration:${31 + (index * 3.1)}s">
         <span class="disc-card__number">${pad(index + 1)} / ${pad(total)}</span>
         <div class="disc-card__disc-wrap">
           <div class="disc-card__disc" style="--disc-accent:${collection.accent}">
@@ -97,26 +150,30 @@
     $$('.disc-card', discStage).forEach((card) => {
       const disc = $('.disc-card__disc', card);
       const collection = archive.collections.find(c => c.id === card.dataset.collection);
+      const motion = createDiscMotion(card, disc);
 
       card.addEventListener('pointermove', (event) => {
         if (routeLock) return;
-        updateDiscMotion(event, disc);
+        motion.update(event);
       });
 
       card.addEventListener('pointerenter', (event) => {
         if (!collection) return;
+        motion.enter();
+        motion.update(event);
         setAccent(collection.accent);
         document.body.classList.add('has-disc-focus');
-        stageStatus.textContent = `DISC ${collection.disc} / ${collection.shortTitle}`;
+        setText(stageStatus, `DISC ${collection.disc} / ${collection.shortTitle}`);
         if (event.pointerType !== 'touch') cursorLabel.classList.add('is-visible');
       });
 
       card.addEventListener('pointerdown', (event) => {
         if (!collection || routeLock) return;
         card.classList.add('is-pressed');
+        motion.enter();
+        motion.update(event);
         setAccent(collection.accent);
-        stageStatus.textContent = `LOADING DISC ${collection.disc}`;
-        updateDiscMotion(event, disc);
+        setText(stageStatus, `LOADING DISC ${collection.disc}`);
         try { card.setPointerCapture(event.pointerId); } catch (_) {}
       });
 
@@ -126,10 +183,10 @@
 
       card.addEventListener('pointerleave', () => {
         releasePress();
-        resetDiscMotion(disc);
+        motion.leave();
         cursorLabel.classList.remove('is-visible');
         document.body.classList.remove('has-disc-focus');
-        stageStatus.textContent = 'MOVE / TOUCH TO INSPECT';
+        setText(stageStatus, 'MOVE / TOUCH TO INSPECT');
         if (!routeLock) setAccent(defaultAccent);
       });
 
@@ -147,30 +204,30 @@
     document.body.classList.add('is-transitioning');
     discStage.classList.add('is-opening');
     card.classList.add('is-opening');
-    stageStatus.textContent = `OPENING / ${collection.shortTitle}`;
+    setText(stageStatus, `OPENING / ${collection.shortTitle}`);
 
-    window.setTimeout(() => openCollection(collection, true), 500);
+    window.setTimeout(() => openCollection(collection, true), 540);
 
     window.setTimeout(() => {
       discStage.classList.remove('is-opening');
       card.classList.remove('is-opening', 'is-pressed');
       document.body.classList.remove('is-transitioning', 'has-disc-focus');
-      stageStatus.textContent = 'MOVE / TOUCH TO INSPECT';
+      setText(stageStatus, 'MOVE / TOUCH TO INSPECT');
       routeLock = false;
-    }, 720);
+    }, 820);
   }
 
   function openCollection(collection, updateHash = false) {
     currentCollection = collection;
     currentArtworkIndex = 0;
 
-    $('#galleryDiscNumber').textContent = `DISC ${collection.disc}`;
-    $('#galleryMiniTitle').textContent = collection.shortTitle;
-    $('#galleryCounter').textContent = `${pad(collection.artworks.length)} TRACKS`;
-    $('#galleryEyebrow').textContent = collection.eyebrow;
-    $('#galleryTitle').textContent = collection.title;
-    $('#galleryDescription').textContent = collection.description;
-    $('#galleryFooterCode').textContent = `DISC / ${collection.disc}`;
+    setText($('#galleryDiscNumber'), `DISC ${collection.disc}`);
+    setText($('#galleryMiniTitle'), collection.shortTitle);
+    setText($('#galleryCounter'), `${pad(collection.artworks.length)} TRACKS`);
+    setText($('#galleryEyebrow'), collection.eyebrow);
+    setText($('#galleryTitle'), collection.title);
+    setText($('#galleryDescription'), collection.description);
+    setText($('#galleryFooterCode'), `DISC / ${collection.disc}`);
 
     galleryGrid.innerHTML = collection.artworks.map((art, index) => `
       <button class="art-card" data-art-index="${index}" aria-label="Open ${escapeHtml(art.title)}">
@@ -212,9 +269,9 @@
     const art = currentCollection.artworks[currentArtworkIndex];
     $('#lightboxImage').src = art.image;
     $('#lightboxImage').alt = art.title;
-    $('#lightboxTrack').textContent = `TRACK ${pad(currentArtworkIndex + 1)} / ${pad(currentCollection.artworks.length)}`;
-    $('#lightboxTitle').textContent = art.title;
-    $('#lightboxMeta').textContent = art.meta;
+    setText($('#lightboxTrack'), `TRACK ${pad(currentArtworkIndex + 1)} / ${pad(currentCollection.artworks.length)}`);
+    setText($('#lightboxTitle'), art.title);
+    setText($('#lightboxMeta'), art.meta);
     if (!lightbox.open) lightbox.showModal();
   }
 
@@ -225,21 +282,11 @@
     openArtwork(currentArtworkIndex);
   }
 
-  function selectView(view) {
-    const isAbout = view === 'about';
-    collectionView.hidden = isAbout;
-    aboutView.hidden = !isAbout;
-    document.body.classList.toggle('collection-locked', !isAbout);
-    $$('.nav-link').forEach(btn => btn.classList.toggle('is-active', btn.dataset.nav === view));
-    if (!gallery.classList.contains('is-open')) window.scrollTo({ top: 0, behavior: isAbout ? 'smooth' : 'auto' });
-  }
-
   function syncHash() {
     const match = location.hash.match(/^#gallery\/([^/]+)$/);
     if (match) {
       const collection = archive.collections.find(c => c.id === decodeURIComponent(match[1]));
       if (collection) {
-        selectView('collection');
         openCollection(collection, false);
         return;
       }
@@ -249,7 +296,6 @@
 
   buildDiscs();
 
-  $$('.nav-link').forEach(btn => btn.addEventListener('click', () => selectView(btn.dataset.nav)));
   $('#closeGallery').addEventListener('click', () => closeCollection(true));
   $('#closeLightbox').addEventListener('click', () => lightbox.close());
   $('#prevArtwork').addEventListener('click', () => stepArtwork(-1));
@@ -263,6 +309,7 @@
     if (lightbox.open) {
       if (event.key === 'ArrowLeft') stepArtwork(-1);
       if (event.key === 'ArrowRight') stepArtwork(1);
+      if (event.key === 'Escape') lightbox.close();
       return;
     }
     if (event.key === 'Escape' && gallery.classList.contains('is-open')) closeCollection(true);
@@ -274,14 +321,12 @@
 
     if (!document.body.classList.contains('collection-locked') || gallery.classList.contains('is-open')) return;
     if (event.pointerType === 'touch') return;
-    const nx = (event.clientX / Math.max(window.innerWidth, 1)) - .5;
-    const ny = (event.clientY / Math.max(window.innerHeight, 1)) - .5;
-    discStage.style.setProperty('--stage-x', `${(nx * 5).toFixed(2)}px`);
-    discStage.style.setProperty('--stage-y', `${(ny * 4).toFixed(2)}px`);
+    const nx = (event.clientX / Math.max(window.innerWidth, 1)) - 0.5;
+    const ny = (event.clientY / Math.max(window.innerHeight, 1)) - 0.5;
+    discStage.style.setProperty('--stage-x', `${(nx * 4).toFixed(2)}px`);
+    discStage.style.setProperty('--stage-y', `${(ny * 3).toFixed(2)}px`);
   }, { passive: true });
 
-  // The collection screen is deliberately a single fixed viewport. This also
-  // prevents iOS/Android rubber-band scrolling while still allowing taps.
   document.addEventListener('touchmove', (event) => {
     if (document.body.classList.contains('collection-locked') && !gallery.classList.contains('is-open')) {
       event.preventDefault();

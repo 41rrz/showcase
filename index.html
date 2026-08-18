@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#090909" />
   <meta name="description" content="LUX Art Archive — an interactive CD-inspired artwork portfolio." />
   <title>LUX // ART ARCHIVE</title>
@@ -13,7 +13,7 @@
   <div class="noise" aria-hidden="true"></div>
   <div class="ambient ambient-a" aria-hidden="true"></div>
   <div class="ambient ambient-b" aria-hidden="true"></div>
-  <div class="transition-flash" id="transitionFlash" aria-hidden="true"></div>
+  <div class="transition-flash" aria-hidden="true"></div>
 
   <div class="boot" id="boot" aria-hidden="true">
     <div class="boot__mark">LUX</div>
@@ -26,11 +26,6 @@
       <span class="brand__word">LUX</span>
       <span class="brand__meta">ART ARCHIVE / 2026</span>
     </a>
-
-    <nav class="site-nav" aria-label="Primary navigation">
-      <button class="nav-link is-active" data-nav="collection">COLLECTION</button>
-      <button class="nav-link" data-nav="about">INFO</button>
-    </nav>
   </header>
 
   <main>
@@ -38,41 +33,15 @@
       <div class="hero__intro">
         <div class="hero__eyebrow">DIGITAL WORK / SELECTED ARCHIVE</div>
         <h1 id="heroTitle">Choose a disc.</h1>
-        <p class="hero__sub">Each disc opens a different collection. Move, touch, or press the surface to catch the holographic finish.</p>
+        <p class="hero__sub">Each disc opens a different collection. Move your pointer across the surface to catch the holographic finish.</p>
       </div>
 
       <div class="disc-stage" id="discStage" aria-label="Artwork collections"></div>
 
       <div class="stage-footer" aria-hidden="true">
         <span id="discRange">01—04 / 04</span>
+        <span>LUX INTERACTIVE ARCHIVE</span>
         <span id="stageStatus">MOVE / TOUCH TO INSPECT</span>
-        <span>CLICK TO OPEN</span>
-      </div>
-    </section>
-
-    <section class="about-panel" id="aboutView" hidden>
-      <div class="about-panel__inner">
-        <div class="about-panel__index">INFO / 001</div>
-        <h2>Artwork presented like physical media.</h2>
-        <p>This archive treats every collection like a physical release. The home screen is intentionally locked to one viewport: no scrolling, no feed, just the discs. Open a release to enter its full gallery.</p>
-        <div class="about-grid">
-          <div>
-            <span class="about-label">FORMAT</span>
-            <p>Interactive web archive</p>
-          </div>
-          <div>
-            <span class="about-label">SYSTEM</span>
-            <p>HTML / CSS / JavaScript</p>
-          </div>
-          <div>
-            <span class="about-label">HOSTING</span>
-            <p>GitHub Pages ready</p>
-          </div>
-          <div>
-            <span class="about-label">EDIT</span>
-            <p>data.js + assets/art</p>
-          </div>
-        </div>
       </div>
     </section>
   </main>
