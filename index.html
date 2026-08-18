@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#090909" />
+  <meta name="description" content="LUX Art Archive — an interactive CD-inspired artwork portfolio." />
+  <title>LUX // ART ARCHIVE</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="ambient ambient-a" aria-hidden="true"></div>
+  <div class="ambient ambient-b" aria-hidden="true"></div>
+
+  <div class="boot" id="boot" aria-hidden="true">
+    <div class="boot__mark">LUX</div>
+    <div class="boot__line"><span></span></div>
+    <div class="boot__copy">LOADING ARCHIVE</div>
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="LUX Art Archive home">
+      <span class="brand__word">LUX</span>
+      <span class="brand__meta">ART ARCHIVE / 2026</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary navigation">
+      <button class="nav-link is-active" data-nav="collection">COLLECTION</button>
+      <button class="nav-link" data-nav="about">INFO</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="collectionView" aria-labelledby="heroTitle">
+      <div class="hero__eyebrow">DIGITAL WORK / SELECTED ARCHIVE</div>
+      <h1 id="heroTitle">Choose a disc.</h1>
+      <p class="hero__sub">Each disc opens a different collection. Move your pointer across the surface to catch the holographic finish.</p>
+
+      <div class="disc-stage" id="discStage" aria-label="Artwork collections"></div>
+
+      <div class="stage-footer" aria-hidden="true">
+        <span>01—04</span>
+        <span>INTERACTIVE COLLECTION</span>
+        <span>CLICK TO OPEN</span>
+      </div>
+    </section>
+
+    <section class="about-panel" id="aboutView" hidden>
+      <div class="about-panel__inner">
+        <div class="about-panel__index">INFO / 001</div>
+        <h2>Artwork presented like physical media.</h2>
+        <p>This site is intentionally built without a framework or external dependency. Every collection is controlled from one simple data file, so adding new artwork is as easy as copying an image into the assets folder and adding one entry.</p>
+        <div class="about-grid">
+          <div>
+            <span class="about-label">FORMAT</span>
+            <p>Interactive web archive</p>
+          </div>
+          <div>
+            <span class="about-label">SYSTEM</span>
+            <p>HTML / CSS / JavaScript</p>
+          </div>
+          <div>
+            <span class="about-label">HOSTING</span>
+            <p>GitHub Pages ready</p>
+          </div>
+          <div>
+            <span class="about-label">EDIT</span>
+            <p>data.js + assets/art</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="gallery" id="gallery" aria-hidden="true">
+    <div class="gallery__chrome">
+      <button class="icon-button" id="closeGallery" aria-label="Close gallery">←</button>
+      <div class="gallery__chrome-title">
+        <span id="galleryDiscNumber">DISC 01</span>
+        <strong id="galleryMiniTitle">COLLECTION</strong>
+      </div>
+      <div class="gallery__counter" id="galleryCounter">00 TRACKS</div>
+    </div>
+
+    <div class="gallery__hero">
+      <div>
+        <div class="gallery__eyebrow" id="galleryEyebrow">ARCHIVE / 2026</div>
+        <h2 id="galleryTitle">Collection</h2>
+      </div>
+      <p id="galleryDescription">Selected work.</p>
+    </div>
+
+    <div class="gallery-grid" id="galleryGrid"></div>
+
+    <div class="gallery__footer">
+      <span>LUX ART ARCHIVE</span>
+      <span id="galleryFooterCode">DISC / 001</span>
+    </div>
+  </section>
+
+  <dialog class="lightbox" id="lightbox">
+    <button class="lightbox__close" id="closeLightbox" aria-label="Close artwork viewer">×</button>
+    <button class="lightbox__arrow lightbox__arrow--prev" id="prevArtwork" aria-label="Previous artwork">←</button>
+    <figure class="lightbox__figure">
+      <img id="lightboxImage" alt="" />
+      <figcaption>
+        <span id="lightboxTrack">TRACK 01</span>
+        <strong id="lightboxTitle">Artwork</strong>
+        <span id="lightboxMeta">DIGITAL / 2026</span>
+      </figcaption>
+    </figure>
+    <button class="lightbox__arrow lightbox__arrow--next" id="nextArtwork" aria-label="Next artwork">→</button>
+  </dialog>
+
+  <div class="cursor-label" id="cursorLabel" aria-hidden="true">OPEN DISC</div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
