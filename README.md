@@ -1,113 +1,51 @@
-# LUX Art Archive
+# LUX // ART ARCHIVE
 
-A complete, dependency-free, CD-inspired artwork portfolio built for GitHub Pages.
+A dependency-free, GitHub Pages-ready artwork portfolio built around interactive CD releases.
 
-## What is included
+## What changed in this enhanced build
 
-- Interactive CD collection homepage
-- Holographic pointer lighting and 3D tilt
-- Animated transition into each gallery
-- Shareable gallery URLs using hashes
-- Responsive mobile/tablet/desktop layout
-- Full-screen artwork lightbox
-- Keyboard controls
-- Reduced-motion accessibility support
-- No npm install, build step, framework, or external CDN
-- GitHub Pages-ready structure
+- The collection/home screen is locked to exactly one viewport: no page scrolling or mobile rubber-band scrolling.
+- Discs continuously float and rotate at slightly different speeds.
+- Pointer/touch position changes disc tilt and holographic reflections.
+- Animated spectral film, glints, sweep highlights, disc grooves, edge ticks and micro-print details.
+- Hover/press changes the ambient page accent to match the selected disc.
+- The whole disc stage has subtle desktop parallax.
+- Opening a collection now uses a larger spin/zoom/flash transition before the gallery enters.
+- Mobile layout is tuned to remain a 2x2 disc wall without needing to scroll.
+- Reduced-motion accessibility is retained.
 
-## Upload to GitHub
+## Edit your artwork
 
-1. Create a new GitHub repository.
-2. Upload **everything inside this folder** to the root of that repository.
-3. Commit the files.
-4. In the repository, open **Settings → Pages**.
-5. Under **Build and deployment**, choose **Deploy from a branch**.
-6. Select your main branch and the **/(root)** folder.
-7. Save.
+1. Put image files in `assets/art/`.
+2. Open `data.js`.
+3. Change each artwork entry to your file path, title and metadata.
 
-GitHub will publish the site after the deployment finishes.
-
-## Replace the example artwork
-
-Put your real image files in:
-
-`assets/art/`
-
-Then open:
-
-`data.js`
-
-Each artwork entry looks like this:
+Example:
 
 ```js
-{ title: "My Artwork", meta: "GFX / 2026", image: "assets/art/my-artwork.jpg" }
+{ title: "My Artwork", meta: "GFX / 2026", image: "assets/art/my-art.png" }
 ```
 
-You can use JPG, PNG, WEBP, GIF, or SVG files.
+Supported by browsers: JPG, PNG, WEBP, GIF and SVG.
 
-## Add a new collection/disc
+## Edit or add collections
 
-Duplicate one collection object in `data.js`, then change:
+Collections are also controlled in `data.js`. Each collection includes:
 
-- `id` — unique URL-safe name
-- `disc` — displayed disc number
+- `id` - unique URL-safe name
+- `disc` - display number
 - `title`
 - `shortTitle`
 - `eyebrow`
 - `description`
-- `discStyle` — `silver`, `white`, `smoke`, or `clear`
-- `accent` — any CSS color
-- `artworks` — your artwork entries
+- `discStyle` - `silver`, `white`, `smoke`, or `clear`
+- `accent` - any CSS color such as `#b9b6ff`
+- `artworks` - array of gallery items
 
-The homepage automatically creates a new disc from the data.
+The current home composition is visually optimized for four collections.
 
-## Change the site title / owner
+## GitHub Pages
 
-Search these files for `LUX` and replace it with your preferred title/brand:
+Upload the contents of this folder to the root of a GitHub repository, then enable Pages from the `main` branch and `/ (root)` folder.
 
-- `index.html`
-- `data.js`
-
-## Recommended image sizes
-
-For a fast portfolio:
-
-- Long edge: roughly 1600–2400 px
-- WEBP or optimized JPG for most images
-- Try to keep individual files under a few MB
-
-## Local preview
-
-You can double-click `index.html`, but browser security rules can differ. A simple local web server is more reliable.
-
-If Python is installed, run this from the project folder:
-
-```bash
-python -m http.server 8080
-```
-
-Then open:
-
-`http://localhost:8080`
-
-## File structure
-
-```text
-lux-art-archive/
-├── index.html
-├── styles.css
-├── app.js
-├── data.js
-├── 404.html
-├── README.md
-├── .gitignore
-└── assets/
-    ├── icons/
-    │   └── favicon.svg
-    └── art/
-        └── example SVG artwork
-```
-
-## Notes
-
-The included SVG artwork is placeholder content only. Replace it with your own work before publishing your final portfolio.
+No npm install, build command or framework is required.
