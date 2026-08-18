@@ -111,3 +111,18 @@ lux-art-archive/
 ## Notes
 
 The included SVG artwork is placeholder content only. Replace it with your own work before publishing your final portfolio.
+
+
+## Hidden LUX Disc Lab
+
+This version includes a private creator section that is not linked in the visible navigation.
+
+Open it either way:
+
+- Add `#studio` to the end of the site URL.
+- Tap/click the **LUX** logo five times quickly.
+- On desktop, `Alt + Shift + L` also opens it.
+
+The Disc Lab includes live **DISC** and **COVER** modes, image upload, material and accent controls, technical graphic presets, artwork drag/scale/rotation/opacity controls, holographic/detail settings, local browser presets, PNG export, JSON preset export, and a generated `data.js` collection template.
+
+Saved presets use `localStorage`, so they stay in that browser/device. They do not automatically write files back into GitHub. Export PNG/JSON when you want a permanent copy. The hidden route is intentionally unobtrusive, but because this is a static website it should not be treated as secure authentication.

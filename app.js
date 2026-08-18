@@ -160,7 +160,6 @@
       card.addEventListener('pointerenter', (event) => {
         if (!collection) return;
         motion.enter();
-        motion.update(event);
         setAccent(collection.accent);
         document.body.classList.add('has-disc-focus');
         setText(stageStatus, `DISC ${collection.disc} / ${collection.shortTitle}`);
@@ -328,7 +327,7 @@
   }, { passive: true });
 
   document.addEventListener('touchmove', (event) => {
-    if (document.body.classList.contains('collection-locked') && !gallery.classList.contains('is-open')) {
+    if (document.body.classList.contains('collection-locked') && !gallery.classList.contains('is-open') && !document.body.classList.contains('studio-open')) {
       event.preventDefault();
     }
   }, { passive: false });

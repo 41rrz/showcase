@@ -88,7 +88,154 @@
 
   <div class="cursor-label" id="cursorLabel" aria-hidden="true">OPEN DISC</div>
 
+  <section class="studio" id="studio" aria-hidden="true">
+    <header class="studio__topbar">
+      <button class="studio__back" id="closeStudio" type="button" aria-label="Close Disc Lab">←</button>
+      <div class="studio__identity">
+        <span>PRIVATE TOOL / LUX</span>
+        <strong>DISC LAB</strong>
+      </div>
+      <div class="studio__mode-tabs" role="tablist" aria-label="Creator mode">
+        <button class="studio-tab is-active" type="button" data-studio-mode="disc">DISC</button>
+        <button class="studio-tab" type="button" data-studio-mode="cover">COVER</button>
+      </div>
+    </header>
+
+    <div class="studio__workspace">
+      <section class="studio__preview-panel">
+        <div class="studio__preview-head">
+          <div>
+            <span class="studio-kicker">LIVE OBJECT / 1000 × 1000</span>
+            <strong id="studioPreviewLabel">DISC PREVIEW</strong>
+          </div>
+          <span id="studioSaveState">UNSAVED</span>
+        </div>
+
+        <div class="studio__canvas-shell" id="studioCanvasShell">
+          <canvas id="studioCanvas" width="1000" height="1000" aria-label="Live disc or cover preview"></canvas>
+        </div>
+
+        <div class="studio__preview-foot">
+          <span>DRAG ARTWORK ON PREVIEW</span>
+          <span>EXPORTS ARE FULL RESOLUTION</span>
+        </div>
+      </section>
+
+      <aside class="studio__controls" aria-label="Disc Lab controls">
+        <section class="studio-control-group">
+          <div class="studio-control-group__head">
+            <span>01</span><strong>IDENTITY</strong>
+          </div>
+          <label class="studio-field">
+            <span>TITLE</span>
+            <input id="studioTitle" type="text" maxlength="28" value="UNTITLED" autocomplete="off" />
+          </label>
+          <label class="studio-field">
+            <span>SUBTITLE</span>
+            <input id="studioSubtitle" type="text" maxlength="40" value="LUX / DIGITAL ARCHIVE" autocomplete="off" />
+          </label>
+          <label class="studio-field">
+            <span>SERIAL</span>
+            <input id="studioSerial" type="text" maxlength="20" value="LUX-001 / 2026" autocomplete="off" />
+          </label>
+        </section>
+
+        <section class="studio-control-group">
+          <div class="studio-control-group__head">
+            <span>02</span><strong>SURFACE</strong>
+          </div>
+          <div class="studio-field studio-field--split">
+            <label>
+              <span>ACCENT</span>
+              <input id="studioAccent" type="color" value="#b9b6ff" />
+            </label>
+            <label>
+              <span>BACKGROUND</span>
+              <input id="studioBackground" type="color" value="#0b0b0d" />
+            </label>
+          </div>
+          <label class="studio-field" id="studioMaterialField">
+            <span>DISC MATERIAL</span>
+            <select id="studioMaterial">
+              <option value="silver">SILVER</option>
+              <option value="white">WHITE</option>
+              <option value="smoke">SMOKE</option>
+              <option value="clear">CLEAR</option>
+              <option value="black">BLACK</option>
+            </select>
+          </label>
+          <label class="studio-field">
+            <span>GRAPHIC SYSTEM</span>
+            <select id="studioGraphic">
+              <option value="rings">ORBIT RINGS</option>
+              <option value="slash">SLASH / BAR</option>
+              <option value="barcode">BARCODE</option>
+              <option value="grid">TECH GRID</option>
+              <option value="minimal">MINIMAL</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="studio-control-group">
+          <div class="studio-control-group__head">
+            <span>03</span><strong>ARTWORK</strong>
+          </div>
+          <label class="studio-upload" for="studioArtworkInput">
+            <input id="studioArtworkInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
+            <span>＋</span>
+            <strong>UPLOAD ARTWORK</strong>
+            <small>PNG / JPG / WEBP</small>
+          </label>
+          <div class="studio-range-grid">
+            <label class="studio-range"><span>SCALE <output id="studioScaleValue">100%</output></span><input id="studioScale" type="range" min="40" max="220" value="100" /></label>
+            <label class="studio-range"><span>ROTATION <output id="studioRotationValue">0°</output></span><input id="studioRotation" type="range" min="-180" max="180" value="0" /></label>
+            <label class="studio-range"><span>OPACITY <output id="studioOpacityValue">100%</output></span><input id="studioOpacity" type="range" min="0" max="100" value="100" /></label>
+            <label class="studio-range"><span>HORIZONTAL <output id="studioXValue">0</output></span><input id="studioX" type="range" min="-300" max="300" value="0" /></label>
+            <label class="studio-range"><span>VERTICAL <output id="studioYValue">0</output></span><input id="studioY" type="range" min="-300" max="300" value="0" /></label>
+          </div>
+        </section>
+
+        <section class="studio-control-group">
+          <div class="studio-control-group__head">
+            <span>04</span><strong>FINISH</strong>
+          </div>
+          <div class="studio-range-grid">
+            <label class="studio-range"><span>HOLOGRAPHIC <output id="studioHoloValue">35%</output></span><input id="studioHolo" type="range" min="0" max="100" value="35" /></label>
+            <label class="studio-range"><span>DETAIL <output id="studioDetailValue">65%</output></span><input id="studioDetail" type="range" min="0" max="100" value="65" /></label>
+          </div>
+          <label class="studio-check"><input id="studioTransparent" type="checkbox" checked /><span>TRANSPARENT OUTSIDE DISC</span></label>
+          <label class="studio-check"><input id="studioGuides" type="checkbox" /><span>SHOW SAFE GUIDES</span></label>
+        </section>
+
+        <section class="studio-control-group">
+          <div class="studio-control-group__head">
+            <span>05</span><strong>PRESETS</strong>
+          </div>
+          <div class="studio-preset-row">
+            <select id="studioPresetSelect" aria-label="Saved presets"><option value="">SAVED PRESETS</option></select>
+            <button id="studioLoadPreset" type="button">LOAD</button>
+          </div>
+          <div class="studio-mini-actions">
+            <button id="studioSavePreset" type="button">SAVE LOCAL</button>
+            <button id="studioDeletePreset" type="button">DELETE</button>
+            <button id="studioReset" type="button">RESET</button>
+          </div>
+        </section>
+
+        <section class="studio-actions">
+          <button class="studio-action studio-action--primary" id="studioExportPng" type="button"><span>EXPORT PNG</span><small>1000 × 1000</small></button>
+          <button class="studio-action" id="studioExportJson" type="button"><span>EXPORT PRESET</span><small>JSON</small></button>
+          <button class="studio-action" id="studioCopyEntry" type="button"><span>COPY SITE ENTRY</span><small>DATA.JS</small></button>
+        </section>
+      </aside>
+    </div>
+
+    <div class="studio-toast" id="studioToast" role="status" aria-live="polite"></div>
+  </section>
+
+
   <script src="data.js"></script>
   <script src="app.js"></script>
+  <script src="studio.js"></script>
 </body>
 </html>
