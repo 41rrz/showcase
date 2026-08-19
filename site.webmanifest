@@ -1,0 +1,11 @@
+{
+  "name": "LUX Art Archive",
+  "short_name": "LUX Archive",
+  "description": "An interactive CD-inspired artwork archive.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "icons": [{"src":"assets/icons/favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]
+}

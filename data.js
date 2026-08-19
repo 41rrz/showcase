@@ -11,7 +11,14 @@
 window.LUX_ARCHIVE = {
   site: {
     owner: "LUX",
-    year: "2026"
+    year: "2026",
+    title: "LUX // ART ARCHIVE",
+    description: "An interactive CD-inspired archive of selected digital artwork.",
+    heroEyebrow: "DIGITAL WORK / SELECTED ARCHIVE",
+    heroTitle: "Choose a disc.",
+    heroSubtitle: "Each disc opens a different collection. Move your pointer across the surface to catch the holographic finish.",
+    footerLeft: "LUX ART ARCHIVE",
+    footerRight: "SELECTED DIGITAL WORK"
   },
 
   collections: [

@@ -2,18 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#090909" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#080808" />
+  <meta name="color-scheme" content="dark" />
   <meta name="description" content="LUX Art Archive — an interactive CD-inspired artwork portfolio." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="LUX // ART ARCHIVE" />
+  <meta property="og:description" content="An interactive CD-inspired archive of selected digital artwork." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LUX // ART ARCHIVE" />
+  <meta name="twitter:description" content="An interactive CD-inspired archive of selected digital artwork." />
   <title>LUX // ART ARCHIVE</title>
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="site.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="collection-locked">
+  <a class="skip-link" href="#discStage">SKIP TO COLLECTIONS</a>
   <div class="noise" aria-hidden="true"></div>
   <div class="ambient ambient-a" aria-hidden="true"></div>
   <div class="ambient ambient-b" aria-hidden="true"></div>
   <div class="transition-flash" aria-hidden="true"></div>
+  <div class="route-progress" id="routeProgress" aria-hidden="true"></div>
+  <div class="sr-live" id="siteLive" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <div class="boot" id="boot" aria-hidden="true">
     <div class="boot__mark">LUX</div>
@@ -24,23 +36,27 @@
   <header class="site-header">
     <a class="brand" href="#" aria-label="LUX Art Archive home">
       <span class="brand__word">LUX</span>
-      <span class="brand__meta">ART ARCHIVE / 2026</span>
+      <span class="brand__meta" id="brandMeta">ART ARCHIVE / 2026</span>
     </a>
+    <div class="site-header__status" aria-hidden="true">
+      <span class="site-header__dot"></span>
+      <span>ARCHIVE ONLINE</span>
+    </div>
   </header>
 
   <main>
     <section class="hero" id="collectionView" aria-labelledby="heroTitle">
       <div class="hero__intro">
-        <div class="hero__eyebrow">DIGITAL WORK / SELECTED ARCHIVE</div>
+        <div class="hero__eyebrow" id="heroEyebrow">DIGITAL WORK / SELECTED ARCHIVE</div>
         <h1 id="heroTitle">Choose a disc.</h1>
-        <p class="hero__sub">Each disc opens a different collection. Move your pointer across the surface to catch the holographic finish.</p>
+        <p class="hero__sub" id="heroSubtitle">Each disc opens a different collection. Move your pointer across the surface to catch the holographic finish.</p>
       </div>
 
       <div class="disc-stage" id="discStage" aria-label="Artwork collections"></div>
 
       <div class="stage-footer" aria-hidden="true">
         <span id="discRange">01—04 / 04</span>
-        <span>LUX INTERACTIVE ARCHIVE</span>
+        <span id="stageFooterCenter">LUX INTERACTIVE ARCHIVE</span>
         <span id="stageStatus">MOVE / TOUCH TO INSPECT</span>
       </div>
     </section>
@@ -53,7 +69,18 @@
         <span id="galleryDiscNumber">DISC 01</span>
         <strong id="galleryMiniTitle">COLLECTION</strong>
       </div>
-      <div class="gallery__counter" id="galleryCounter">00 TRACKS</div>
+      <div class="gallery__chrome-actions">
+        <button class="chrome-button" id="gallerySearchToggle" type="button" aria-expanded="false" aria-controls="gallerySearchBar">SEARCH</button>
+        <button class="chrome-button" id="galleryDensity" type="button">DENSITY</button>
+        <button class="chrome-button" id="galleryShare" type="button">SHARE</button>
+        <span class="gallery__counter" id="galleryCounter">00 TRACKS</span>
+      </div>
+    </div>
+
+    <div class="gallery-search" id="gallerySearchBar" hidden>
+      <label for="gallerySearchInput">FILTER COLLECTION</label>
+      <input id="gallerySearchInput" type="search" autocomplete="off" placeholder="Search title or metadata…" />
+      <button id="gallerySearchClear" type="button">CLEAR</button>
     </div>
 
     <div class="gallery__hero">
@@ -65,18 +92,22 @@
     </div>
 
     <div class="gallery-grid" id="galleryGrid"></div>
+    <div class="gallery-empty" id="galleryEmpty" hidden>NO MATCHING TRACKS</div>
 
     <div class="gallery__footer">
-      <span>LUX ART ARCHIVE</span>
+      <span id="galleryFooterLeft">LUX ART ARCHIVE</span>
       <span id="galleryFooterCode">DISC / 001</span>
     </div>
   </section>
 
   <dialog class="lightbox" id="lightbox">
+    <div class="lightbox__loading" id="lightboxLoading" aria-hidden="true"><span></span></div>
     <button class="lightbox__close" id="closeLightbox" aria-label="Close artwork viewer">×</button>
     <button class="lightbox__arrow lightbox__arrow--prev" id="prevArtwork" aria-label="Previous artwork">←</button>
     <figure class="lightbox__figure">
-      <img id="lightboxImage" alt="" />
+      <div class="lightbox__image-stage" id="lightboxImageStage">
+        <img id="lightboxImage" alt="" draggable="false" />
+      </div>
       <figcaption>
         <span id="lightboxTrack">TRACK 01</span>
         <strong id="lightboxTitle">Artwork</strong>
@@ -84,6 +115,13 @@
       </figcaption>
     </figure>
     <button class="lightbox__arrow lightbox__arrow--next" id="nextArtwork" aria-label="Next artwork">→</button>
+    <div class="lightbox__tools" aria-label="Artwork viewer controls">
+      <button id="lightboxShare" type="button">SHARE</button>
+      <button id="lightboxZoomOut" type="button" aria-label="Zoom out">−</button>
+      <button id="lightboxZoomReset" type="button" aria-label="Reset zoom">100%</button>
+      <button id="lightboxZoomIn" type="button" aria-label="Zoom in">＋</button>
+      <button id="lightboxFullscreen" type="button">FULL</button>
+    </div>
   </dialog>
 
   <div class="cursor-label" id="cursorLabel" aria-hidden="true">OPEN DISC</div>
@@ -91,101 +129,31 @@
   <section class="studio" id="studio" aria-hidden="true">
     <header class="studio__topbar">
       <button class="studio__back" id="closeStudio" type="button" aria-label="Close Disc Lab">←</button>
-      <div class="studio__identity">
-        <span>PRIVATE TOOL / LUX</span>
-        <strong>DISC LAB</strong>
-      </div>
+      <div class="studio__identity"><span>PRIVATE TOOL / LUX</span><strong>DISC LAB</strong></div>
       <div class="studio__mode-tabs" role="tablist" aria-label="Creator mode">
         <button class="studio-tab is-active" type="button" data-studio-mode="disc">DISC</button>
         <button class="studio-tab" type="button" data-studio-mode="cover">COVER</button>
       </div>
     </header>
-
     <div class="studio__workspace">
       <section class="studio__preview-panel">
-        <div class="studio__preview-head">
-          <div>
-            <span class="studio-kicker">LIVE OBJECT / 1000 × 1000</span>
-            <strong id="studioPreviewLabel">DISC PREVIEW</strong>
-          </div>
-          <span id="studioSaveState">UNSAVED</span>
-        </div>
-
-        <div class="studio__canvas-shell" id="studioCanvasShell">
-          <canvas id="studioCanvas" width="1000" height="1000" aria-label="Live disc or cover preview"></canvas>
-        </div>
-
-        <div class="studio__preview-foot">
-          <span>DRAG ARTWORK ON PREVIEW</span>
-          <span>EXPORTS ARE FULL RESOLUTION</span>
-        </div>
+        <div class="studio__preview-head"><div><span class="studio-kicker">LIVE OBJECT / 1000 × 1000</span><strong id="studioPreviewLabel">DISC PREVIEW</strong></div><span id="studioSaveState">UNSAVED</span></div>
+        <div class="studio__canvas-shell" id="studioCanvasShell"><canvas id="studioCanvas" width="1000" height="1000" aria-label="Live disc or cover preview"></canvas></div>
+        <div class="studio__preview-foot"><span>DRAG ARTWORK ON PREVIEW</span><span>EXPORTS ARE FULL RESOLUTION</span></div>
       </section>
-
       <aside class="studio__controls" aria-label="Disc Lab controls">
-        <section class="studio-control-group">
-          <div class="studio-control-group__head">
-            <span>01</span><strong>IDENTITY</strong>
-          </div>
-          <label class="studio-field">
-            <span>TITLE</span>
-            <input id="studioTitle" type="text" maxlength="28" value="UNTITLED" autocomplete="off" />
-          </label>
-          <label class="studio-field">
-            <span>SUBTITLE</span>
-            <input id="studioSubtitle" type="text" maxlength="40" value="LUX / DIGITAL ARCHIVE" autocomplete="off" />
-          </label>
-          <label class="studio-field">
-            <span>SERIAL</span>
-            <input id="studioSerial" type="text" maxlength="20" value="LUX-001 / 2026" autocomplete="off" />
-          </label>
+        <section class="studio-control-group"><div class="studio-control-group__head"><span>01</span><strong>IDENTITY</strong></div>
+          <label class="studio-field"><span>TITLE</span><input id="studioTitle" type="text" maxlength="28" value="UNTITLED" autocomplete="off" /></label>
+          <label class="studio-field"><span>SUBTITLE</span><input id="studioSubtitle" type="text" maxlength="40" value="LUX / DIGITAL ARCHIVE" autocomplete="off" /></label>
+          <label class="studio-field"><span>SERIAL</span><input id="studioSerial" type="text" maxlength="20" value="LUX-001 / 2026" autocomplete="off" /></label>
         </section>
-
-        <section class="studio-control-group">
-          <div class="studio-control-group__head">
-            <span>02</span><strong>SURFACE</strong>
-          </div>
-          <div class="studio-field studio-field--split">
-            <label>
-              <span>ACCENT</span>
-              <input id="studioAccent" type="color" value="#b9b6ff" />
-            </label>
-            <label>
-              <span>BACKGROUND</span>
-              <input id="studioBackground" type="color" value="#0b0b0d" />
-            </label>
-          </div>
-          <label class="studio-field" id="studioMaterialField">
-            <span>DISC MATERIAL</span>
-            <select id="studioMaterial">
-              <option value="silver">SILVER</option>
-              <option value="white">WHITE</option>
-              <option value="smoke">SMOKE</option>
-              <option value="clear">CLEAR</option>
-              <option value="black">BLACK</option>
-            </select>
-          </label>
-          <label class="studio-field">
-            <span>GRAPHIC SYSTEM</span>
-            <select id="studioGraphic">
-              <option value="rings">ORBIT RINGS</option>
-              <option value="slash">SLASH / BAR</option>
-              <option value="barcode">BARCODE</option>
-              <option value="grid">TECH GRID</option>
-              <option value="minimal">MINIMAL</option>
-            </select>
-          </label>
+        <section class="studio-control-group"><div class="studio-control-group__head"><span>02</span><strong>SURFACE</strong></div>
+          <div class="studio-field studio-field--split"><label><span>ACCENT</span><input id="studioAccent" type="color" value="#b9b6ff" /></label><label><span>BACKGROUND</span><input id="studioBackground" type="color" value="#0b0b0d" /></label></div>
+          <label class="studio-field" id="studioMaterialField"><span>DISC MATERIAL</span><select id="studioMaterial"><option value="silver">SILVER</option><option value="white">WHITE</option><option value="smoke">SMOKE</option><option value="clear">CLEAR</option><option value="black">BLACK</option></select></label>
+          <label class="studio-field"><span>GRAPHIC SYSTEM</span><select id="studioGraphic"><option value="rings">ORBIT RINGS</option><option value="slash">SLASH / BAR</option><option value="barcode">BARCODE</option><option value="grid">TECH GRID</option><option value="minimal">MINIMAL</option></select></label>
         </section>
-
-        <section class="studio-control-group">
-          <div class="studio-control-group__head">
-            <span>03</span><strong>ARTWORK</strong>
-          </div>
-          <label class="studio-upload" for="studioArtworkInput">
-            <input id="studioArtworkInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
-            <span>＋</span>
-            <strong>UPLOAD ARTWORK</strong>
-            <small>PNG / JPG / WEBP</small>
-          </label>
+        <section class="studio-control-group"><div class="studio-control-group__head"><span>03</span><strong>ARTWORK</strong></div>
+          <label class="studio-upload" for="studioArtworkInput"><input id="studioArtworkInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" /><span>＋</span><strong>UPLOAD ARTWORK</strong><small>PNG / JPG / WEBP</small></label>
           <div class="studio-range-grid">
             <label class="studio-range"><span>SCALE <output id="studioScaleValue">100%</output></span><input id="studioScale" type="range" min="40" max="220" value="100" /></label>
             <label class="studio-range"><span>ROTATION <output id="studioRotationValue">0°</output></span><input id="studioRotation" type="range" min="-180" max="180" value="0" /></label>
@@ -194,47 +162,22 @@
             <label class="studio-range"><span>VERTICAL <output id="studioYValue">0</output></span><input id="studioY" type="range" min="-300" max="300" value="0" /></label>
           </div>
         </section>
-
-        <section class="studio-control-group">
-          <div class="studio-control-group__head">
-            <span>04</span><strong>FINISH</strong>
-          </div>
-          <div class="studio-range-grid">
-            <label class="studio-range"><span>HOLOGRAPHIC <output id="studioHoloValue">35%</output></span><input id="studioHolo" type="range" min="0" max="100" value="35" /></label>
-            <label class="studio-range"><span>DETAIL <output id="studioDetailValue">65%</output></span><input id="studioDetail" type="range" min="0" max="100" value="65" /></label>
-          </div>
-          <label class="studio-check"><input id="studioTransparent" type="checkbox" checked /><span>TRANSPARENT OUTSIDE DISC</span></label>
-          <label class="studio-check"><input id="studioGuides" type="checkbox" /><span>SHOW SAFE GUIDES</span></label>
+        <section class="studio-control-group"><div class="studio-control-group__head"><span>04</span><strong>FINISH</strong></div>
+          <div class="studio-range-grid"><label class="studio-range"><span>HOLOGRAPHIC <output id="studioHoloValue">35%</output></span><input id="studioHolo" type="range" min="0" max="100" value="35" /></label><label class="studio-range"><span>DETAIL <output id="studioDetailValue">65%</output></span><input id="studioDetail" type="range" min="0" max="100" value="65" /></label></div>
+          <label class="studio-check"><input id="studioTransparent" type="checkbox" checked /><span>TRANSPARENT OUTSIDE DISC</span></label><label class="studio-check"><input id="studioGuides" type="checkbox" /><span>SHOW SAFE GUIDES</span></label>
         </section>
-
-        <section class="studio-control-group">
-          <div class="studio-control-group__head">
-            <span>05</span><strong>PRESETS</strong>
-          </div>
-          <div class="studio-preset-row">
-            <select id="studioPresetSelect" aria-label="Saved presets"><option value="">SAVED PRESETS</option></select>
-            <button id="studioLoadPreset" type="button">LOAD</button>
-          </div>
-          <div class="studio-mini-actions">
-            <button id="studioSavePreset" type="button">SAVE LOCAL</button>
-            <button id="studioDeletePreset" type="button">DELETE</button>
-            <button id="studioReset" type="button">RESET</button>
-          </div>
+        <section class="studio-control-group"><div class="studio-control-group__head"><span>05</span><strong>PRESETS</strong></div>
+          <div class="studio-preset-row"><select id="studioPresetSelect" aria-label="Saved presets"><option value="">SAVED PRESETS</option></select><button id="studioLoadPreset" type="button">LOAD</button></div>
+          <div class="studio-mini-actions"><button id="studioSavePreset" type="button">SAVE LOCAL</button><button id="studioDeletePreset" type="button">DELETE</button><button id="studioReset" type="button">RESET</button></div>
         </section>
-
-        <section class="studio-actions">
-          <button class="studio-action studio-action--primary" id="studioExportPng" type="button"><span>EXPORT PNG</span><small>1000 × 1000</small></button>
-          <button class="studio-action" id="studioExportJson" type="button"><span>EXPORT PRESET</span><small>JSON</small></button>
-          <button class="studio-action" id="studioCopyEntry" type="button"><span>COPY SITE ENTRY</span><small>DATA.JS</small></button>
-        </section>
+        <section class="studio-actions"><button class="studio-action studio-action--primary" id="studioExportPng" type="button"><span>EXPORT PNG</span><small>1000 × 1000</small></button><button class="studio-action" id="studioExportJson" type="button"><span>EXPORT PRESET</span><small>JSON</small></button><button class="studio-action" id="studioCopyEntry" type="button"><span>COPY SITE ENTRY</span><small>DATA.JS</small></button></section>
       </aside>
     </div>
-
     <div class="studio-toast" id="studioToast" role="status" aria-live="polite"></div>
   </section>
 
-
   <script src="data.js"></script>
+  <script src="editor.js"></script>
   <script src="app.js"></script>
   <script src="studio.js"></script>
 </body>

@@ -26,7 +26,6 @@
   let state = { ...defaults };
   let artworkImage = null;
   let drag = null;
-  let brandTaps = [];
   let drawQueued = false;
 
   const rangeOutputs = {
@@ -533,19 +532,8 @@
   $('#studioExportJson').addEventListener('click', exportJson);
   $('#studioCopyEntry').addEventListener('click', copySiteEntry);
 
-  if (brand) {
-    brand.addEventListener('click', (event) => {
-      event.preventDefault();
-      const now = Date.now();
-      brandTaps = brandTaps.filter(t => now - t < 2500);
-      brandTaps.push(now);
-      if (brandTaps.length >= 5) {
-        event.preventDefault();
-        brandTaps = [];
-        openStudio(true);
-      }
-    });
-  }
+  window.LUX_STUDIO = { open: () => openStudio(true), close: () => closeStudio(true) };
+
 
   document.addEventListener('keydown', (event) => {
     if (event.shiftKey && event.altKey && event.key.toLowerCase() === 'l') openStudio(true);
